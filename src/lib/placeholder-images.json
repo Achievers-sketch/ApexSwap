@@ -1,3 +1,70 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "eth",
+      "description": "Ethereum logo",
+      "imageUrl": "https://images.unsplash.com/photo-1690766637396-762ac18d3c52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZXRoZXJldW0lMjBsb2dvfGVufDB8fHx8MTc2MzMwNjA1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ethereum logo"
+    },
+    {
+      "id": "usdt",
+      "description": "Tether logo",
+      "imageUrl": "https://images.unsplash.com/photo-1654842805820-20159a52ba74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0ZXRoZXIlMjBsb2dvfGVufDB8fHx8MTc2MzMwNjA1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tether logo"
+    },
+    {
+      "id": "btc",
+      "description": "Bitcoin logo",
+      "imageUrl": "https://images.unsplash.com/photo-1656523864170-d4a1b4a263b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxiaXRjb2luJTIwbG9nb3xlbnwwfHx8fDE3NjMyNjk4NTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bitcoin logo"
+    },
+    {
+      "id": "sol",
+      "description": "Solana logo",
+      "imageUrl": "https://picsum.photos/seed/sol/64/64",
+      "imageHint": "solana logo"
+    },
+    {
+      "id": "link",
+      "description": "Chainlink logo",
+      "imageUrl": "https://images.unsplash.com/photo-1653499676737-becf2c9562c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjaGFpbmxpbmslMjBsb2dvfGVufDB8fHx8MTc2MzMwNjA1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chainlink logo"
+    },
+    {
+      "id": "uni",
+      "description": "Uniswap logo",
+      "imageUrl": "https://images.unsplash.com/photo-1735921012148-3843adfcce3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx1bmlzd2FwJTIwbG9nb3xlbnwwfHx8fDE3NjMzMDYwNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "uniswap logo"
+    },
+    {
+      "id": "apex",
+      "description": "ApexSwap logo",
+      "imageUrl": "https://images.unsplash.com/photo-1761625424632-c6adc86211d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YXBleHN3YXAlMjBsb2dvfGVufDB8fHx8MTc2MzMwNjA1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "apexswap logo"
+    },
+    {
+      "id": "metamask",
+      "description": "MetaMask logo",
+      "imageUrl": "https://images.unsplash.com/photo-1726499636656-4e095faa8871?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtZXRhbWFzayUyMGxvZ298ZW58MHx8fHwxNzYzMzA2MDUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "metamask logo"
+    },
+    {
+      "id": "walletconnect",
+      "description": "WalletConnect logo",
+      "imageUrl": "https://images.unsplash.com/photo-1645887147387-edaeb216a104?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3YWxsZXRjb25uZWN0JTIwbG9nb3xlbnwwfHx8fDE3NjMzMDYwNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "walletconnect logo"
+    },
+    {
+      "id": "coinbase",
+      "description": "Coinbase Wallet logo",
+      "imageUrl": "https://images.unsplash.com/photo-1653499676737-becf2c9562c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb2luYmFzZSUyMGxvZ298ZW58MHx8fHwxNzYzMzA2MDUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coinbase logo"
+    },
+    {
+      "id": "trustwallet",
+      "description": "Trust Wallet logo",
+      "imageUrl": "https://images.unsplash.com/photo-1690766637396-762ac18d3c52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dHJ1c3R3YWxsZXQlMjBsb2dvfGVufDB8fHx8MTc2MzMwNjA1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "trustwallet logo"
+    }
+  ]
 }
