@@ -16,22 +16,17 @@ import {
   initialLiquidityPools,
 } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
+import { useWeb3Modal, useWeb3ModalState } from '@web3modal/wagmi/react';
+import { useAccount, useDisconnect } from 'wagmi';
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const generateRandomAddress = () => {
-  const chars = '0123456789abcdef';
-  let address = '0x';
-  for (let i = 0; i < 40; i++) {
-    address += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return address;
-};
-
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
-  const [connected, setConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
+  const { open } = useWeb3Modal();
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  
   const [balances, setBalances] = useState<{ [key: string]: number }>({
     ETH: 10,
     USDT: 10000,
@@ -137,20 +132,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const connectWallet = () => {
-    setConnected(true);
-    setWalletAddress(generateRandomAddress());
-    toast({
-      title: 'Wallet Connected',
-      description: 'You have successfully connected your wallet.',
-    });
+    open();
   };
 
   const disconnectWallet = () => {
-    setConnected(false);
-    setWalletAddress('');
-    toast({
-      title: 'Wallet Disconnected',
-    });
+    disconnect();
   };
 
   const selectPair = (pair: TradingPair) => {
@@ -158,7 +144,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const placeOrder = (order: Omit<Order, 'id' | 'timestamp' | 'status'>) => {
-    if (!connected) {
+    if (!isConnected) {
       toast({ variant: 'destructive', title: 'Error', description: 'Please connect your wallet first.' });
       return;
     }
@@ -204,8 +190,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const value = {
-    connected,
-    walletAddress,
+    connected: isConnected,
+    walletAddress: address ?? '',
     balances,
     tokens: initialTokens,
     tradingPairs,
