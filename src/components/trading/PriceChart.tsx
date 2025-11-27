@@ -161,32 +161,29 @@ const Candle = (props: any) => {
   const wickWidth = 1;
 
   const bodyY = isBullish ? y + height : y;
-  const bodyHeight = isBullish ? height : -height;
-
-  // Ensure wick does not go below body
-  const highWickY1 = y;
-  const highWickY2 = isBullish ? y - (high - close) : y - (high - open);
-  const lowWickY1 = y + height;
-  const lowWickY2 = isBullish ? y + height + (open - low) : y + height + (close - low);
+  const bodyHeight = Math.abs(height);
+  
+  const highWickY = y;
+  const lowWickY = y + height;
   
   return (
     <g stroke={fill} fill={fill} strokeWidth="1">
       {/* Body */}
-      <rect x={x} y={bodyY} width={width} height={Math.abs(bodyHeight)} />
+      <rect x={x} y={bodyY} width={width} height={bodyHeight} />
       {/* High Wick */}
       <line
         x1={x + width / 2}
-        y1={highWickY1}
+        y1={highWickY}
         x2={x + width / 2}
-        y2={highWickY2}
+        y2={y - (high - Math.max(open,close))}
         strokeWidth={wickWidth}
       />
       {/* Low Wick */}
       <line
         x1={x + width / 2}
-        y1={lowWickY1}
+        y1={lowWickY}
         x2={x + width / 2}
-        y2={lowWickY2}
+        y2={lowWickY + (Math.min(open,close) - low)}
         strokeWidth={wickWidth}
       />
     </g>
