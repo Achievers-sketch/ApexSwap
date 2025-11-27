@@ -3,18 +3,13 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { AppProvider } from '@/context/AppContext';
 import { AppShell } from '@/components/layout/AppShell';
-import { Web3ModalProvider } from '@/lib/walletconnect';
-import { WagmiProvider } from 'wagmi';
-import { config } from '@/lib/walletconnect';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Providers } from '@/components/layout/Providers';
 
 export const metadata: Metadata = {
   title: 'ApexSwap | Decentralized Trading Platform',
   description:
     'A fully functional browser-based decentralized exchange (DEX) trading platform.',
 };
-
-const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -36,16 +31,12 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-            <Web3ModalProvider>
-              <AppProvider>
-                <AppShell>{children}</AppShell>
-                <Toaster />
-              </AppProvider>
-            </Web3ModalProvider>
-          </QueryClientProvider>
-        </WagmiProvider>
+        <Providers>
+          <AppProvider>
+            <AppShell>{children}</AppShell>
+            <Toaster />
+          </AppProvider>
+        </Providers>
       </body>
     </html>
   );

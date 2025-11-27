@@ -159,32 +159,30 @@ const Candle = (props: any) => {
   
   const isBullish = close >= open;
   const wickWidth = 1;
-
   const bodyY = isBullish ? y + height : y;
-  const bodyHeight = Math.abs(height);
+  const bodyHeight = Math.max(1, Math.abs(height));
   
-  const highWickY = y;
-  const lowWickY = y + height;
-  
+  // y values are inverted, so for high wick we need to find the top of the body
+  const bodyTopY = Math.min(y, y + height);
+  const bodyBottomY = Math.max(y, y + height);
+
   return (
-    <g stroke={fill} fill={fill} strokeWidth="1">
+    <g stroke={fill} fill={fill} strokeWidth={wickWidth}>
       {/* Body */}
       <rect x={x} y={bodyY} width={width} height={bodyHeight} />
       {/* High Wick */}
       <line
         x1={x + width / 2}
-        y1={highWickY}
+        y1={bodyTopY}
         x2={x + width / 2}
-        y2={y - (high - Math.max(open,close))}
-        strokeWidth={wickWidth}
+        y2={bodyTopY - (high - Math.max(open, close))}
       />
       {/* Low Wick */}
-      <line
+       <line
         x1={x + width / 2}
-        y1={lowWickY}
+        y1={bodyBottomY}
         x2={x + width / 2}
-        y2={lowWickY + (Math.min(open,close) - low)}
-        strokeWidth={wickWidth}
+        y2={bodyBottomY + (Math.min(open, close) - low)}
       />
     </g>
   );
