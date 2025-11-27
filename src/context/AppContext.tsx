@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import {
   Token,
   TradingPair,
@@ -16,8 +16,9 @@ import {
   initialLiquidityPools,
 } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
-import { useWeb3Modal, useWeb3ModalState } from '@web3modal/wagmi/react';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useDisconnect } from 'wagmi';
+import { useCoinGecko } from '@/hooks/use-coingecko';
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -42,94 +43,57 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [openOrders, setOpenOrders] = useState<Order[]>([]);
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [candlestickData, setCandlestickData] = useState<Candle[]>([]);
-  const [orderBook, setOrderBook] = useState<{bids: any[], asks: any[]}>({bids: [], asks: []});
-  const [recentTrades, setRecentTrades] = useState<any[]>([]);
+  
+  const { markets, ohlc, orderBook, trades } = useCoinGecko(selectedPair);
 
+  // Update trading pairs and selected pair when market data is fetched
   useEffect(() => {
-    // Initial data generation
-    const now = Date.now();
-    const initialCandles: Candle[] = Array.from({ length: 50 }, (_, i) => {
-        const open = selectedPair.price - 10 + Math.random() * 20;
-        const close = open + (Math.random() - 0.5) * 5;
-        const high = Math.max(open, close) + Math.random() * 3;
-        const low = Math.min(open, close) - Math.random() * 3;
-        return {
-            time: now - (50 - i) * 60000,
-            open,
-            close,
-            high,
-            low,
-            ohlc: [open, high, low, close],
-            volume: 1000 + Math.random() * 2000,
-        }
-    });
-    setCandlestickData(initialCandles);
-
-    const generateOrderBook = () => {
-        const bids = Array.from({length: 20}).map((_, i) => {
-            const price = selectedPair.price - (i * 0.5) - Math.random();
-            const amount = Math.random() * 5;
-            return { price, amount, total: price * amount, depth: Math.random() * 100 };
-        }).sort((a,b) => b.price - a.price);
-
-        const asks = Array.from({length: 20}).map((_, i) => {
-            const price = selectedPair.price + (i * 0.5) + Math.random();
-            const amount = Math.random() * 5;
-            return { price, amount, total: price * amount, depth: Math.random() * 100 };
-        }).sort((a,b) => a.price - b.price);
-        setOrderBook({bids, asks});
-    }
-    generateOrderBook();
-
-    // Simulation interval
-    const interval = setInterval(() => {
-      setTradingPairs(prevPairs =>
-        prevPairs.map(p => {
-          const change = (Math.random() - 0.5) * 0.02; // up to 2% change
-          const newPrice = p.price * (1 + change);
+    if (markets.length > 0) {
+      const updatedPairs = initialTradingPairs.map(pair => {
+        const marketData = markets.find(m => m.id === pair.base.id);
+        if (marketData) {
+          const quoteMarket = markets.find(m => m.id === pair.quote.id);
+          const price = quoteMarket ? marketData.current_price / quoteMarket.current_price : marketData.current_price;
+          
           return {
-            ...p,
-            price: newPrice,
-            change24h: p.change24h + (change * 100),
+            ...pair,
+            price: price,
+            change24h: marketData.price_change_percentage_24h,
+            volume24h: marketData.total_volume,
           };
-        })
-      );
-      
-      setSelectedPair(prevPair => {
-          const change = (Math.random() - 0.5) * 0.02;
-          const newPrice = prevPair.price * (1 + change);
-          
-          setCandlestickData(prevData => {
-              const lastCandle = prevData[prevData.length - 1];
-              const newCandle: Candle = {
-                time: Date.now(),
-                open: lastCandle.close,
-                close: newPrice,
-                high: Math.max(lastCandle.close, newPrice) + Math.random(),
-                low: Math.min(lastCandle.close, newPrice) - Math.random(),
-                ohlc: [lastCandle.close, Math.max(lastCandle.close, newPrice) + Math.random(), Math.min(lastCandle.close, newPrice) - Math.random(), newPrice],
-                volume: 1000 + Math.random() * 2000,
-              };
-              return [...prevData.slice(1), newCandle];
-          });
-        
-          setRecentTrades(prev => [{
-            price: newPrice,
-            amount: Math.random() * 0.5,
-            time: Date.now(),
-            side: Math.random() > 0.5 ? 'buy' : 'sell'
-          }, ...prev.slice(0, 19)]);
-          
-          generateOrderBook();
-
-          return {...prevPair, price: newPrice, change24h: prevPair.change24h + (change * 100)}
+        }
+        return pair;
       });
+      setTradingPairs(updatedPairs);
 
-    }, 3000);
+      const updatedSelectedPair = updatedPairs.find(p => p.symbol === selectedPair.symbol);
+      if (updatedSelectedPair) {
+        setSelectedPair(updatedSelectedPair);
+      }
+    }
+  }, [markets, selectedPair.symbol]);
 
-    return () => clearInterval(interval);
-  }, []);
+  const candlestickData = ohlc.map(d => ({
+    time: d[0],
+    open: d[1],
+    high: d[2],
+    low: d[3],
+    close: d[4],
+    ohlc: [d[1],d[2],d[3],d[4]] as [number,number,number,number],
+    volume: 0, // ohlc data from coingecko doesn't include volume
+  }));
+  
+  const formattedOrderBook = {
+    bids: orderBook.bids.map((b: any) => ({price: b[0], amount: b[1], total: b[0] * b[1], depth: Math.random() * 100})),
+    asks: orderBook.asks.map((a: any) => ({price: a[0], amount: a[1], total: a[0] * a[1], depth: Math.random() * 100})),
+  };
+
+  const recentTrades = trades.map((t: any) => ({
+      price: t.price,
+      amount: t.volume,
+      time: new Date(t.timestamp).getTime(),
+      side: t.type.toLowerCase(),
+  }));
 
   const connectWallet = () => {
     open();
@@ -139,9 +103,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     disconnect();
   };
 
-  const selectPair = (pair: TradingPair) => {
+  const selectPair = useCallback((pair: TradingPair) => {
     setSelectedPair(pair);
-  };
+  }, []);
 
   const placeOrder = (order: Omit<Order, 'id' | 'timestamp' | 'status'>) => {
     if (!isConnected) {
@@ -201,7 +165,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     orderHistory,
     transactions,
     candlestickData,
-    orderBook,
+    orderBook: formattedOrderBook,
     recentTrades,
     connectWallet,
     disconnectWallet,

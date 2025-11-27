@@ -1,4 +1,5 @@
 export interface Token {
+  id: string; // CoinGecko ID
   symbol: string;
   name: string;
   logoURI: string;

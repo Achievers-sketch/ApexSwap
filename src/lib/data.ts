@@ -3,38 +3,46 @@ import { PlaceHolderImages } from './placeholder-images';
 
 const getImage = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl || '';
 
+// CoinGecko IDs are used for API calls
 export const initialTokens: Token[] = [
   {
+    id: 'ethereum',
     symbol: 'ETH',
     name: 'Ethereum',
     logoURI: getImage('eth'),
   },
   {
+    id: 'tether',
     symbol: 'USDT',
     name: 'Tether',
     logoURI: getImage('usdt'),
   },
   {
+    id: 'bitcoin',
     symbol: 'BTC',
     name: 'Bitcoin',
     logoURI: getImage('btc'),
   },
   {
+    id: 'solana',
     symbol: 'SOL',
     name: 'Solana',
     logoURI: getImage('sol'),
   },
   {
+    id: 'chainlink',
     symbol: 'LINK',
     name: 'Chainlink',
     logoURI: getImage('link'),
   },
   {
+    id: 'uniswap',
     symbol: 'UNI',
     name: 'Uniswap',
     logoURI: getImage('uni'),
   },
   {
+    id: 'apexswap',
     symbol: 'APEX',
     name: 'ApexSwap',
     logoURI: getImage('apex'),

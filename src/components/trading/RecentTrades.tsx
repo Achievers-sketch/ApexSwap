@@ -13,7 +13,7 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 
 export function RecentTrades() {
-  const { recentTrades } = useAppContext();
+  const { recentTrades, selectedPair } = useAppContext();
 
   return (
     <>
@@ -25,8 +25,8 @@ export function RecentTrades() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Price</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>Price ({selectedPair.quote.symbol})</TableHead>
+                <TableHead className="text-right">Amount ({selectedPair.base.symbol})</TableHead>
                 <TableHead className="text-right">Time</TableHead>
               </TableRow>
             </TableHeader>
@@ -38,7 +38,7 @@ export function RecentTrades() {
                       trade.side === 'buy' ? 'text-success' : 'text-destructive'
                     )}
                   >
-                    {trade.price.toFixed(2)}
+                    {trade.price.toFixed(selectedPair.quote.symbol === 'USDT' ? 2 : 8)}
                   </TableCell>
                   <TableCell className="text-right">
                     {trade.amount.toFixed(4)}
