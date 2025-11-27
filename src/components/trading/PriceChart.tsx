@@ -21,11 +21,13 @@ import { TradingPair } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAppContext } from '@/context/AppContext';
 import Image from 'next/image';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const timeframes = ['1H', '4H', '1D', '1W'];
 
 export function PriceChart({ pair }: { pair: TradingPair }) {
   const { candlestickData } = useAppContext();
+  const isMobile = useIsMobile();
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -77,12 +79,12 @@ export function PriceChart({ pair }: { pair: TradingPair }) {
                 <Image src={pair.base.logoURI} alt={pair.base.symbol} width={24} height={24} className="rounded-full border-2 border-background" data-ai-hint={`${pair.base.name} icon`} />
                 <Image src={pair.quote.logoURI} alt={pair.quote.symbol} width={24} height={24} className="rounded-full border-2 border-background" data-ai-hint={`${pair.quote.name} icon`}/>
              </div>
-            <CardTitle className="font-headline">{pair.symbol}</CardTitle>
+            <CardTitle className="font-headline text-lg md:text-2xl">{pair.symbol}</CardTitle>
             <div>
-              <div className="text-2xl font-bold font-mono">{pair.price.toFixed(2)}</div>
+              <div className="text-lg md:text-2xl font-bold font-mono">{pair.price.toFixed(2)}</div>
               <div
                 className={cn(
-                  'text-sm font-mono',
+                  'text-xs md:text-sm font-mono',
                   pair.change24h >= 0 ? 'text-success' : 'text-destructive'
                 )}
               >
@@ -90,21 +92,23 @@ export function PriceChart({ pair }: { pair: TradingPair }) {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-1 rounded-md bg-secondary p-1">
-            {timeframes.map((tf) => (
-              <Button
-                key={tf}
-                variant={tf === '1D' ? 'default' : 'ghost'}
-                size="sm"
-                className="h-7"
-              >
-                {tf}
-              </Button>
-            ))}
-          </div>
+          {!isMobile && (
+            <div className="flex items-center gap-1 rounded-md bg-secondary p-1">
+              {timeframes.map((tf) => (
+                <Button
+                  key={tf}
+                  variant={tf === '1D' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="h-7"
+                >
+                  {tf}
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
       </CardHeader>
-      <CardContent className="flex-1 p-0">
+      <CardContent className="flex-1 p-0 h-[250px] md:h-auto">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={candlestickData}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -113,16 +117,17 @@ export function PriceChart({ pair }: { pair: TradingPair }) {
               tickFormatter={(time) => new Date(time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
               tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
               stroke="hsl(var(--border))"
+              interval={isMobile ? 15 : 7}
             />
             <YAxis
               orientation="right"
               domain={['dataMin - 10', 'dataMax + 10']}
-              tickFormatter={(price) => price.toFixed(2)}
+              tickFormatter={(price) => price.toFixed(isMobile ? 0 : 2)}
               tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
               stroke="hsl(var(--border))"
             />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="ohlc" shape={<Candle />} barSize={5}>
+            <Bar dataKey="ohlc" shape={<Candle />} barSize={isMobile ? 3 : 5}>
               {candlestickData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
@@ -133,7 +138,7 @@ export function PriceChart({ pair }: { pair: TradingPair }) {
             <Bar
               dataKey="volume"
               yAxisId="volume"
-              barSize={10}
+              barSize={isMobile ? 5: 10}
               fill="hsl(var(--primary), 0.2)"
             />
             <YAxis

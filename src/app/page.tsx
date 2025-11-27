@@ -8,9 +8,47 @@ import { RecentTrades } from '@/components/trading/RecentTrades';
 import { UserActivity } from '@/components/trading/UserActivity';
 import { Card } from '@/components/ui/card';
 import { useAppContext } from '@/context/AppContext';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function TradingPage() {
   const { selectedPair } = useAppContext();
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-4">
+        <Card className="flex-1">
+          <PriceChart pair={selectedPair} />
+        </Card>
+        <Tabs defaultValue="order-entry" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="order-entry">Trade</TabsTrigger>
+            <TabsTrigger value="order-book">Book</TabsTrigger>
+            <TabsTrigger value="recent-trades">Trades</TabsTrigger>
+          </TabsList>
+          <TabsContent value="order-entry">
+            <Card>
+              <OrderEntry />
+            </Card>
+          </TabsContent>
+          <TabsContent value="order-book">
+            <Card className="h-[300px]">
+              <OrderBook />
+            </Card>
+          </TabsContent>
+          <TabsContent value="recent-trades">
+            <Card className="h-[300px]">
+              <RecentTrades />
+            </Card>
+          </TabsContent>
+        </Tabs>
+        <div className="h-[320px]">
+          <UserActivity />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full min-h-[850px] flex flex-col gap-4">

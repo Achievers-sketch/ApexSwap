@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { useAppContext } from '@/context/AppContext';
-import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
 export default function AnalyticsPage() {
   const { tradingPairs, liquidityPools } = useAppContext();
@@ -36,8 +36,8 @@ export default function AnalyticsPage() {
     <div className="space-y-8">
       <h1 className="text-3xl font-bold font-headline">Platform Analytics</h1>
       
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="col-span-2 sm:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Platform Volume (24h)</CardTitle>
           </CardHeader>
@@ -46,7 +46,7 @@ export default function AnalyticsPage() {
             <p className="text-xs text-muted-foreground">+5.2% from last day</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="col-span-2 sm:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Value Locked (TVL)</CardTitle>
           </CardHeader>
@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
         </Card>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Volume by Pair</CardTitle>
@@ -83,7 +83,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                 <BarChart data={volumeData} margin={{ top: 20, right: 20, bottom: 5, left: 20 }}>
+                 <BarChart data={volumeData} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" />
                     <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                     <YAxis unit="$" tickFormatter={(value) => `${value}M`} />
@@ -101,7 +101,7 @@ export default function AnalyticsPage() {
           <CardContent>
              <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                 <BarChart data={tvlData} margin={{ top: 20, right: 20, bottom: 5, left: 20 }}>
+                 <BarChart data={tvlData} margin={{ top: 20, right: 20, bottom: 5, left: 0 }}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" />
                     <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                     <YAxis unit="$" tickFormatter={(value) => `${value}M`} />
