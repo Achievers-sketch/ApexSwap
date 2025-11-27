@@ -13,24 +13,16 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { impermanentLossPrediction, ImpermanentLossPredictionOutput } from '@/ai/flows/impermanent-loss-prediction';
+import { impermanentLossPrediction, ImpermanentLossPredictionOutput, ImpermanentLossPredictionFormSchema } from '@/ai/flows/impermanent-loss-prediction';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Loader2 } from 'lucide-react';
-
-const formSchema = z.object({
-  token0Amount: z.coerce.number().positive(),
-  token1Amount: z.coerce.number().positive(),
-  initialPriceRatio: z.coerce.number().positive(),
-  currentPriceRatio: z.coerce.number().positive(),
-  historicalVolatility: z.coerce.number().min(0).max(1),
-});
 
 export function PredictionForm() {
   const [prediction, setPrediction] = useState<ImpermanentLossPredictionOutput | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof ImpermanentLossPredictionFormSchema>>({
+    resolver: zodResolver(ImpermanentLossPredictionFormSchema),
     defaultValues: {
       token0Amount: 10,
       token1Amount: 35000,
@@ -40,7 +32,7 @@ export function PredictionForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof ImpermanentLossPredictionFormSchema>) {
     setLoading(true);
     setPrediction(null);
     try {

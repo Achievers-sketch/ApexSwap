@@ -10,6 +10,14 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+export const ImpermanentLossPredictionFormSchema = z.object({
+  token0Amount: z.coerce.number().positive(),
+  token1Amount: z.coerce.number().positive(),
+  initialPriceRatio: z.coerce.number().positive(),
+  currentPriceRatio: z.coerce.number().positive(),
+  historicalVolatility: z.coerce.number().min(0).max(1),
+});
+
 const ImpermanentLossPredictionInputSchema = z.object({
   token0Amount: z.number().describe('Amount of token 0 provided.'),
   token1Amount: z.number().describe('Amount of token 1 provided.'),
